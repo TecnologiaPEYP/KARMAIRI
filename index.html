@@ -89,6 +89,68 @@ body{overflow:hidden}
 }
 .boton:hover{background:rgba(255,255,255,.08);transform:translateY(-1px)}
 .boton span{font:17px Arial,sans-serif}
+button.boton{cursor:pointer;padding:0}
+.fondo-pc{
+  display:none;
+  position:fixed;
+  inset:-60px;
+  z-index:0;
+  background:center/cover no-repeat;
+  filter:blur(30px) brightness(.45);
+}
+@media (min-width:700px){
+  .hero{
+    z-index:1;
+    width:calc(max(100vh,600px)*.5);
+    box-shadow:0 0 80px rgba(0,0,0,.65);
+  }
+  .fondo-pc{display:block}
+}
+.selector{
+  position:fixed;
+  inset:0;
+  z-index:10;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  background:rgba(23,11,9,.72);
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+}
+.selector[hidden]{display:none}
+.selector-caja{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:14px;
+  width:100%;
+  max-width:300px;
+  padding:34px 24px 30px;
+  border:1px solid rgba(255,244,232,.35);
+  border-radius:18px;
+  background:rgba(30,8,6,.85);
+  color:#f7eee4;
+  text-align:center;
+}
+.selector-titulo{
+  margin-bottom:6px;
+  font:italic 500 26px "Cormorant Garamond",Georgia,serif;
+}
+.selector-caja .boton{margin-top:0;width:190px}
+.selector-cerrar{
+  position:absolute;
+  top:8px;
+  right:12px;
+  border:0;
+  background:none;
+  color:#f7eee4;
+  font:24px Arial,sans-serif;
+  cursor:pointer;
+  opacity:.75;
+}
+.selector-cerrar:hover{opacity:1}
 .ubicacion{
   margin-top:59px;
   font:5.5px Arial,sans-serif;
@@ -102,11 +164,41 @@ body{overflow:hidden}
   <div class="contenido">
     <h1 class="logo">KarMaiRi<small>COCINA &amp; TRAGÓS</small></h1>
     <div class="titulo">Caribe,<em>de mar a mesa</em></div>
-    <a class="boton" href="MENU%20KARMAIRI-10-09-2026.pdf" target="_blank" rel="noopener noreferrer">
+    <button class="boton" type="button" id="abrirMenu">
       Explora el menú <span>→</span>
-    </a>
+    </button>
     <div class="ubicacion">CENTRO HISTÓRICO · CARTAGENA DE INDIAS</div>
   </div>
 </section>
+<div class="selector" id="selectorMenu" role="dialog" aria-modal="true" aria-labelledby="selectorTitulo" hidden>
+  <div class="selector-caja">
+    <button class="selector-cerrar" type="button" id="cerrarMenu" aria-label="Cerrar">×</button>
+    <div class="selector-titulo" id="selectorTitulo">¿Qué menú deseas ver?</div>
+    <a class="boton" href="Menu%20de%20dia%20(12)%20-%20liviano.pdf" target="_blank" rel="noopener noreferrer">
+      Menú de día <span>→</span>
+    </a>
+    <a class="boton" href="Menu%20de%20noche12-%20liviano.pdf" target="_blank" rel="noopener noreferrer">
+      Menú de noche <span>→</span>
+    </a>
+  </div>
+</div>
+<script>
+(function(){
+  var fondo=document.querySelector('.fondo');
+  var fondoPc=document.createElement('div');
+  fondoPc.className='fondo-pc';
+  fondoPc.style.backgroundImage='url("'+fondo.src+'")';
+  document.body.insertBefore(fondoPc,document.body.firstChild);
+
+  var selector=document.getElementById('selectorMenu');
+  function abrir(){selector.hidden=false}
+  function cerrar(){selector.hidden=true}
+  document.getElementById('abrirMenu').addEventListener('click',abrir);
+  document.getElementById('cerrarMenu').addEventListener('click',cerrar);
+  selector.addEventListener('click',function(e){if(e.target===selector)cerrar()});
+  selector.querySelectorAll('a').forEach(function(a){a.addEventListener('click',cerrar)});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')cerrar()});
+})();
+</script>
 </body>
 </html>
