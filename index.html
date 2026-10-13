@@ -201,8 +201,24 @@ button.boton{cursor:pointer;padding:0}
 })();
 </script>
 <script>
-// Contador de visitas (sin cookies ni datos personales): se ve en el dashboard PEYP → "Visitas sitio web".
-try{navigator.sendBeacon('https://app-extras-automatizacion-backend.ixheh1.easypanel.host/web-visitas/karmairi')}catch(e){}
+// Codigo anonimo automatico por navegador.
+(function(){
+  var codigo = null;
+  try {
+    codigo = localStorage.getItem('karmairi_visitante_v1');
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(codigo || '')) {
+      codigo = crypto.randomUUID();
+      localStorage.setItem('karmairi_visitante_v1', codigo);
+    }
+  } catch(e) { codigo = null; }
+  var url = 'https://app-extras-automatizacion-backend.ixheh1.easypanel.host/web-visitas/karmairi';
+  if (codigo) url += '?codigo=' + encodeURIComponent(codigo);
+  try {
+    if (!navigator.sendBeacon || !navigator.sendBeacon(url)) {
+      fetch(url, {method:'POST', keepalive:true}).catch(function(){});
+    }
+  } catch(e) {}
+})();
 </script>
 </body>
 </html>
